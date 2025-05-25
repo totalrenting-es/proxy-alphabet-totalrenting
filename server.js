@@ -64,7 +64,14 @@ app.all('/*', async (req, res) => {
   try {
     logger.info(`=== NUEVA PETICIÓN ===`);
     const url = urlApi + req.url;
-    const { host, ...headers } = req.headers;
+    const headersToFilter = ['host', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-https', 'connection', 'content-length'];
+
+    const headers = {};
+    Object.entries(req.headers).forEach(([key, value]) => {
+      if (!headersToFilter.includes(key.toLowerCase())) {
+        headers[key] = value;
+      }
+    });
 
     logger.info(`URL completa: ${url}`);
     logger.info(`Headers enviados a la API:`);
