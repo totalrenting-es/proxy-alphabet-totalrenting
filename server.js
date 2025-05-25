@@ -48,8 +48,7 @@ app.all("/*", async (req, res) => {
     logger.info(`Método HTTP: ${req.method}`);
 
     // Preparar headers (excluyendo algunos que pueden causar problemas)
-    const { host, ...headers } = req.headers;
-    headers.host = "85.208.102.46";
+    const { ...headers } = req.headers;
     // Log completo de todos los headers que se van a enviar
     logger.info(`Headers enviados a la API:`);
     Object.entries(headers).forEach(([key, value]) => {
