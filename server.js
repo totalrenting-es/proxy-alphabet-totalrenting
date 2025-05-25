@@ -4,7 +4,7 @@ const winston = require("winston");
 const path = require("path");
 const app = express();
 const port = 3001;
-const urlApi = "http://partner-acc-2.alphabet.com";
+const urlApi = "https://partner-acc-2.alphabet.com";
 
 app.use(express.json());
 
@@ -34,10 +34,12 @@ app.all("/*", async (req, res) => {
     const targetUrl = urlApi + req.path;
     logger.info(`Reenviando petición a: ${targetUrl}`);
 
+    const { host, ...headers } = req.headers;
+
     const response = await axios({
       method: req.method,
       url: targetUrl,
-      headers: { ...req.headers },
+      headers,
       data: req.body,
     });
     logger.info(`Respuesta exitosa: ${response.status}`);
