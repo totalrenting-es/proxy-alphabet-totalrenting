@@ -1,16 +1,38 @@
 const express = require("express");
 const axios = require("axios");
+const winston = require("winston");
+const path = require("path");
 const app = express();
 const port = 3001;
-const urlApi = "https://partner-acc-2.alphabet.com";
+const urlApi = "http://partner-acc-2.alphabet.com";
 
 app.use(express.json());
 
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: path.join(__dirname, "logs", "error.log"),
+      level: "error",
+    }),
+    new winston.transports.File({
+      filename: path.join(__dirname, "logs", "combined.log"),
+    }),
+    new winston.transports.Console(), // Para desarrollo local
+  ],
+});
+
 app.all("/*", async (req, res) => {
   try {
-    console.log(req.path);
+    logger.info(`Ruta solicitada: ${req.path}`);
     const targetUrl = urlApi + req.path;
-    console.log(`Reenviando petición a: ${targetUrl}`);
+    logger.info(`Reenviando petición a: ${targetUrl}`);
 
     const response = await axios({
       method: req.method,
@@ -18,10 +40,10 @@ app.all("/*", async (req, res) => {
       headers: { ...req.headers },
       data: req.body,
     });
-
+    logger.info(`Respuesta exitosa: ${response.status}`);
     res.status(response.status).send(response.data);
   } catch (error) {
-    console.error("Error:", error.message);
+    logger.error(`Error: ${error}`);
     res
       .status(error.response?.status || 500)
       .send(error.response?.data || "Error");
@@ -29,5 +51,5 @@ app.all("/*", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Proxy escuchando en http://localhost:${port}`);
+  logger.info(`Proxy escuchando en http://localhost:${port}`);
 });
