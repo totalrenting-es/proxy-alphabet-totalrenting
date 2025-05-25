@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = 3001;
-const urlApi = 'https://partner-acc-3.alphabet.com/lease-quotation-service';
+const urlApi = 'https://partner-acc-2.alphabet.com/lease-quotation-service';
 let serverIP = null;
 
 app.use(express.json());
@@ -64,11 +64,11 @@ app.all('/*', async (req, res) => {
   try {
     logger.info(`=== NUEVA PETICIÓN ===`);
     const url = urlApi + req.url;
-    const headersToFilter = ['host', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-https', 'connection', 'content-length'];
+    const headersToInlcude = ['authorization', 'accept'];
 
     const headers = {};
     Object.entries(req.headers).forEach(([key, value]) => {
-      if (!headersToFilter.includes(key.toLowerCase())) {
+      if (headersToInlcude.includes(key.toLowerCase())) {
         headers[key] = value;
       }
     });
