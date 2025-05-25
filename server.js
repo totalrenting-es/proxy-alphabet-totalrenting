@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = 3001;
-const urlApi = 'https://partner.alphabet.com/lease-quotation-service';
+const urlApi = 'https://partner-acc-3.alphabet.com/lease-quotation-service';
 let serverIP = null;
 
 app.use(express.json());
