@@ -6,7 +6,6 @@ const fs = require('fs');
 const app = express();
 const port = 3001;
 const urlApi = 'https://partner-acc-2.alphabet.com/lease-quotation-service';
-let serverIP = null;
 
 app.use(express.json());
 
@@ -45,13 +44,11 @@ async function getServerPublicIP() {
   }
 }
 
-// Ruta específica para obtener la IP del servidor
 app.get('/get-ip', async (req, res) => {
   try {
     const currentIP = await getServerPublicIP();
     if (currentIP) {
-      serverIP = currentIP;
-      return res.json({ ip: serverIP });
+      return res.json({ ip: currentIP });
     } else {
       return res.status(500).json({ error: 'No se pudo obtener la IP pública del servidor' });
     }
@@ -62,7 +59,6 @@ app.get('/get-ip', async (req, res) => {
 
 app.all('/*', async (req, res) => {
   try {
-    logger.info(`=== NUEVA PETICIÓN ===`);
     const url = urlApi + req.url;
     const headersToInlcude = ['authorization', 'accept'];
 
@@ -73,23 +69,14 @@ app.all('/*', async (req, res) => {
       }
     });
 
-    logger.info(`URL completa: ${url}`);
-    logger.info(`Headers enviados a la API:`);
-    Object.entries(headers).forEach(([key, value]) => logger.info(`  ${key}: ${value}`));
-
     const axiosConfig = { method: req.method, url, headers };
     if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
       axiosConfig.data = req.body;
     }
 
+    logger.info(`url: ${url}`);
     const response = await axios(axiosConfig);
-
-    // Log de headers de respuesta
-    logger.info(`Headers de respuesta:`);
-    Object.entries(response.headers).forEach(([key, value]) => logger.info(`  ${key}: ${value}`));
-
-    // Log del contenido de respuesta
-    logger.info(`Respuesta data: ${JSON.stringify(response.data, null, 2)}`);
+    logger.info(`status: ${response.status}`);
 
     res.status(response.status).send(response.data);
   } catch (error) {
