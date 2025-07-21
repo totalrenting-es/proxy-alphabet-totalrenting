@@ -70,7 +70,7 @@ app.all('/*', async (req, res) => {
     });
 
     const axiosConfig = { method: req.method, url, headers };
-    if (req.method !== 'GET' && req.method !== 'HEAD' && req.body && Object.keys(req.body).length > 0) {
+    if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
       axiosConfig.data = req.body;
     }
 
