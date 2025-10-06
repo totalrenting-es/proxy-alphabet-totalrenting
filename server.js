@@ -59,6 +59,8 @@ app.get('/get-ip', async (req, res) => {
 
 app.all('/*', async (req, res) => {
   try {
+    console.log('');
+    console.log('START REQUEST------------------------------');
     const url = urlApi + req.url;
     const headersToInlcude = ['authorization', 'accept'];
 
@@ -75,8 +77,14 @@ app.all('/*', async (req, res) => {
     }
 
     logger.info(`url: ${url}`);
+    console.log(`url: ${url}`);
+    console.log(`headers: ${JSON.stringify(headers)}`);
+
     const response = await axios(axiosConfig);
     logger.info(`status: ${response.status}`);
+    console.log(`status: ${response.status}`);
+    console.log(`data: ${response.data}`);
+    console.log('END REQUEST------------------------------');
 
     res.status(response.status).send(response.data);
   } catch (error) {
