@@ -94,12 +94,12 @@ app.all('/*', async (req, res) => {
     console.log(`data: ${response.data}`);
     console.log('');
 
-    console.log('END REQUEST------------------------------');
-
     res.status(response.status).send(response.data);
   } catch (error) {
     logger.error(`Error message: ${error}`);
     res.status(error.response?.status || 500).send(error.response?.data || 'Error');
+  } finally {
+    console.log('END REQUEST------------------------------');
   }
 });
 
