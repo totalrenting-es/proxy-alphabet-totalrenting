@@ -91,13 +91,13 @@ app.all('/*', async (req, res) => {
     console.log(`status: ${response.status}`);
     console.log('');
 
-    console.log(`data: ${response.data}`);
+    console.log(`data: ${JSON.stringify(response.data, null, 2)}`);
     console.log('');
 
     res.status(response.status).send(response.data);
   } catch (error) {
     logger.error(`Error message: ${error}`);
-    console.log(`data: ${error.response}`);
+    console.log(`data: ${JSON.stringify(error.response?.data, null, 2)}`);
 
     res.status(error.response?.status || 500).send(error.response?.data || 'Error');
   } finally {
