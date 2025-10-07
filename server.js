@@ -57,6 +57,10 @@ app.get('/get-ip', async (req, res) => {
   }
 });
 
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
+
 app.all('/*', async (req, res) => {
   try {
     console.log('');
