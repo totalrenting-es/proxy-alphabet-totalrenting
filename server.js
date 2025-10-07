@@ -97,6 +97,8 @@ app.all('/*', async (req, res) => {
     res.status(response.status).send(response.data);
   } catch (error) {
     logger.error(`Error message: ${error}`);
+    console.log(`data: ${error.response}`);
+
     res.status(error.response?.status || 500).send(error.response?.data || 'Error');
   } finally {
     console.log('END REQUEST------------------------------');
